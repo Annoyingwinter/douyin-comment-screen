@@ -1,0 +1,53 @@
+{
+  "name": "douyin-screen-electron",
+  "version": "1.0.3",
+  "description": "抖音评论筛查工具 Electron 桌面应用",
+  "author": "More",
+  "private": true,
+  "main": "main/index.js",
+  "scripts": {
+    "start": "electron .",
+    "verify": "node scripts/verify.js && node scripts/verify-package.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.local.douyinscreen",
+    "productName": "抖音评论筛查",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main/**/*",
+      "preload.js",
+      "renderer/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "..",
+        "to": "scripts",
+        "filter": ["douyin_topic_comment_export.py", "login_check.py", "douyin_comment_link_demo.py"]
+      },
+      { "from": "../客户首次使用说明.txt", "to": "客户首次使用说明.txt" }
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "artifactName": "DouyinScreen-${version}-${arch}-nsis.${ext}",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "抖音评论筛查"
+    },
+    "portable": {
+      "artifactName": "DouyinScreen-${version}-${arch}-portable.${ext}"
+    }
+  }
+}

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:" />
+  <title>抖音评论筛查</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="toolbar">
+    <div class="title">抖音评论筛查</div>
+    <div class="actions">
+      <span id="loginBadge" class="badge unknown">登录态: 未检测</span>
+      <button id="btnCheckLogin" class="btn">检测登录</button>
+      <button id="btnScanLogin" class="btn">扫码登录</button>
+      <button id="btnStart" class="btn primary">开始抓取</button>
+      <button id="btnStop" class="btn danger" disabled>停止</button>
+      <button id="btnOpenResult" class="btn">打开结果MD</button>
+      <button id="btnOpenFolder" class="btn">打开数据目录</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="params">
+      <h3>运行参数</h3>
+      <form id="paramsForm" autocomplete="off">
+        <label>入口 URL
+          <input id="topicUrl" value="https://www.douyin.com/" readonly />
+        </label>
+        <label>抓取模式
+          <select id="mode">
+            <option value="search">搜索模式（按关键词搜索视频）</option>
+            <option value="feed">推荐流模式（刷推荐视频抓评论）</option>
+          </select>
+        </label>
+        <label id="keywordRow">话题关键词 <span class="req">*</span>
+          <input id="topicKeyword" />
+        </label>
+        <div class="row2">
+          <label>IP 筛选
+            <input id="ips" value="北京,河北" />
+          </label>
+          <label>排序
+            <select id="sort">
+              <option value="latest">最新</option>
+              <option value="default">默认</option>
+            </select>
+          </label>
+        </div>
+        <div class="row3">
+          <label>最大视频数<input id="maxVideos" type="number" min="1" value="50" /></label>
+          <label>话题滚动轮数<input id="topicScrollRounds" type="number" min="1" value="28" /></label>
+          <label>评论滚动轮数<input id="commentScrollRounds" type="number" min="1" value="24" /></label>
+        </div>
+        <div class="row3">
+          <label>近 N 天评论<input id="maxCommentAgeDays" type="number" value="2" /></label>
+          <label>验证码等待(秒)<input id="captchaWaitSeconds" type="number" value="180" /></label>
+          <label>就绪超时(秒)<input id="readyTimeoutSeconds" type="number" value="90" /></label>
+        </div>
+        <div class="row3">
+          <label>限时(分钟)<input id="maxRunMinutes" type="number" value="0" title="0=不限" /></label>
+          <label>启动等待(秒)<input id="pauseSeconds" type="number" value="0" /></label>
+          <label>浏览器通道
+            <select id="browserChannel">
+              <option value="msedge">Edge</option>
+              <option value="chromium">Chromium</option>
+              <option value="chrome">Chrome</option>
+            </select>
+          </label>
+        </div>
+        <label class="inline"><input type="checkbox" id="headless" /> 无头模式(不显示浏览器窗口)</label>
+
+        <details open>
+          <summary>文件与配置路径</summary>
+          <div class="paths">
+            <label>输出文件<input id="output" value="douyin_全话题_去重昵称汇总.md" /></label>
+            <label>去重库文件<input id="storeFile" value=".douyin_unique_commenters_store.jsonl" /></label>
+            <label>历史文件<input id="historyFile" value=".douyin_scan_history.jsonl" /></label>
+            <label>停止标记文件<input id="stopFlagFile" value=".douyin_stop" /></label>
+            <label>浏览器配置目录
+              <div class="inline-row"><input id="profileDir" /><button type="button" id="btnPickProfileDir" class="btn small">浏览</button></div>
+            </label>
+          </div>
+        </details>
+      </form>
+
+      <details class="aux">
+        <summary>辅助工具: 评论定位清单</summary>
+        <div class="aux-body">
+          <label>输入 CSV <input id="locatorCsv" placeholder="douyin_comments_input.csv" /></label>
+          <label class="inline"><input type="checkbox" id="locatorCheckUrl" /> 检测链接状态</label>
+          <div class="inline-row">
+            <button type="button" id="btnGenLocator" class="btn small">生成清单</button>
+            <button type="button" id="btnOpenLocator" class="btn small">打开 HTML 清单</button>
+          </div>
+        </div>
+      </details>
+
+      <details class="aux">
+        <summary>环境设置</summary>
+        <div class="aux-body">
+          <label>脚本目录
+            <div class="inline-row"><input id="scriptDir" /><button type="button" id="btnPickScriptDir" class="btn small">浏览</button></div>
+          </label>
+          <label>Python 命令 <input id="pythonPath" value="python" /></label>
+          <button type="button" id="btnEnvCheck" class="btn small">检测环境</button>
+        </div>
+      </details>
+    </aside>
+
+    <section class="workspace">
+      <div class="tabs">
+        <button class="tab active" data-tab="console">实时控制台</button>
+        <button class="tab" data-tab="table">本次结果 <span id="resultCount" class="count"></span></button>
+        <button class="tab" data-tab="batches">批次历史</button>
+      </div>
+      <div class="tab-body">
+        <div id="tab-console" class="tab-panel active">
+          <div id="console" class="console"></div>
+        </div>
+        <div id="tab-table" class="tab-panel">
+          <table class="data-table">
+            <thead>
+              <tr><th>昵称</th><th>IP</th><th>时间</th><th>账号</th><th>评论内容</th></tr>
+            </thead>
+            <tbody id="resultBody"></tbody>
+          </table>
+        </div>
+        <div id="tab-batches" class="tab-panel">
+          <div id="batches"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="statusbar">
+    <span id="state">空闲</span>
+    <span id="statScanned">已扫内容: 0</span>
+    <span id="statComments">评论总数: 0</span>
+    <span id="statFiltered">本次筛出: 0</span>
+    <span id="statGlobal">全局去重: 0</span>
+    <span id="statElapsed">耗时: 00:00</span>
+    <span id="statDeadline">限时: 未启用</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

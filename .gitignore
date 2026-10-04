@@ -1,0 +1,26 @@
+# 依赖与构建产物
+node_modules/
+dist/
+app/dist/
+
+# 运行时生成的个人数据（登录态 / 扫描结果），一律不入库
+.edge_user_data_clone/
+.playwright-douyin-profile/
+*.local/
+
+# 抓取运行时数据文件
+.douyin_*.jsonl
+douyin_*.md
+.douyin_stop
+.douyin_open_url_requests*.jsonl
+douyin_comment_targets_demo.html
+douyin_comments_input.csv
+
+# 日志与缓存
+*.log
+__pycache__/
+*.pyc
+
+# 系统文件
+.DS_Store
+Thumbs.db

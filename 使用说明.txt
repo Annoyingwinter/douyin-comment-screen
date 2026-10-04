@@ -1,0 +1,20 @@
+抖音评论筛查工具—首次使用
+
+1. 请先完整解压压缩包，不要直接在压缩包内运行。
+2. 电脑需安装 Python，并安装 Python Playwright：
+   pip install playwright
+3. 安装版：运行 DouyinScreen-版本-x64-nsis.exe，完成安装后打开“抖音评论筛查”。
+   免安装版：直接运行 DouyinScreen-版本-x64-portable.exe。
+   源码版：双击“启动客户端.bat”。
+4. 首次运行没有任何账号、Cookie 或扫描历史，需要在打开的浏览器中登录抖音。
+5. 登录后填写需要筛查的话题关键词并开始任务。程序先打开抖音主页，再点击页面搜索框输入关键词搜索，无需填写搜索链接。
+
+6. 默认使用 Microsoft Edge，请确认电脑已安装 Edge。
+7. 如果提示找不到 Python，在“环境设置”中填写 python.exe 的完整路径。
+
+安装版/免安装版已包含 Electron 和采集脚本；Python、Python Playwright、Edge 需自行安装。
+安装 Python 时勾选“Add Python to PATH”，然后执行：python -m pip install playwright
+打包版首次启动会将脚本复制到 %APPDATA%\douyin-screen-electron\runtime。
+默认结果、历史及浏览器登录状态也保存在该目录，可在界面中打开结果文件夹。
+升级会更新内置脚本，保留结果与登录状态。
+源码版的“.edge_user_data_clone”目录用于保存登录状态，请勿删除。
