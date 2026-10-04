@@ -1,6 +1,12 @@
 # 抖音评论筛查工具 (douyin-comment-screen)
 
-基于 Electron + Python(Playwright) 的抖音评论采集与 IP 属地筛查桌面应用。
+[![GitHub Stars](https://img.shields.io/github/stars/Annoyingwinter/douyin-comment-screen?style=social)](https://github.com/Annoyingwinter/douyin-comment-screen/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Platform](https://img.shields.io/badge/platform-Windows%2010%2B-blue)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![Electron](https://img.shields.io/badge/electron-33-47848F)
+
+基于 Electron + Python(Playwright) 的抖音评论采集与 IP 属地筛查桌面应用。开箱即用，扫码登录后一键运行。
 
 两种抓取模式：
 
